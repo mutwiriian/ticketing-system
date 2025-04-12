@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 
 import jwt
 from jwt.exceptions import InvalidTokenError
