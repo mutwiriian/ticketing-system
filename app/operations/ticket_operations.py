@@ -13,7 +13,7 @@ from models.ticket_details import(
 from database.tables import tickets_table, ticket_details_table
 from operations.user_operations import db_exception
 
-from auth.auth import get_current_user
+from auth.security import get_current_user
 
 async def create_ticket(
     session: AsyncSession,

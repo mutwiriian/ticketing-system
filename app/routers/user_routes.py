@@ -15,7 +15,7 @@ from operations.user_operations import (
         update_user, delete_user
 )
 
-from auth.auth import get_current_user
+from auth.security import get_current_user
 
 user_router = APIRouter(tags=["users"])
 

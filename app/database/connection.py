@@ -2,14 +2,11 @@ from typing import AsyncGenerator
 
 from sqlalchemy import text
 
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.asyncio import (
         AsyncEngine, AsyncSession, 
         AsyncConnection, async_sessionmaker
 )
-
-from operations.user_operations import db_exception
 
 DB_URL = "postgresql+asyncpg://postgres:postgres@172.22.0.1:5432/tickets"
 

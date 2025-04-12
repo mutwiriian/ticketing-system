@@ -14,7 +14,7 @@ from operations.event_operations import (
     update_event, delete_event
 )
 
-from auth.auth import get_current_user
+from auth.security import get_current_user
 
 event_router = APIRouter(dependencies=[Depends(get_current_user)], tags=["events"])
 

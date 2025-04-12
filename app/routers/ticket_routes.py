@@ -16,7 +16,7 @@ from operations.ticket_operations import (
     sell_ticket_to_user
 )
 
-from auth.auth import get_current_user
+from auth.security import get_current_user
 
 ticket_router = APIRouter(dependencies=[Depends(get_current_user)], tags=["tickets"])
 

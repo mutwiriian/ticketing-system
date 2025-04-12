@@ -11,7 +11,9 @@ from routers.sponsorship_routes import sponsorship_router
 from routers.ticket_routes import ticket_router
 from routers.user_routes import user_router
 
-from database.connection import create_database, create_async_engine
+from database.connection import create_database
+
+from sqlalchemy.ext.asyncio import create_async_engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

@@ -14,7 +14,7 @@ from operations.sponsorship_operations import (
     update_sponsorship, delete_sponsorship
 )
 
-from auth.auth import get_current_user
+from auth.security import get_current_user
 
 sponsorship_router = APIRouter(dependencies=[Depends(get_current_user)], tags=["sponsorships"])
 

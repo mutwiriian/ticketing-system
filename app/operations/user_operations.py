@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status
+from fastapi import Depends, HTTPException, status
 
 from sqlalchemy import insert, select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,18 +6,21 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from models.user import UserBody, UserUpdateBody
 from database.tables import users_table
-from auth.security import hash_password
+from auth.security import hash_password, get_current_user
 
 db_exception = HTTPException(
     detail="Database error occcured",
     status_code=status.HTTP_400_BAD_REQUEST
 )
 
-async def create_user(session: AsyncSession, user: UserBody):
+async def create_user(
+        session: AsyncSession, user: UserBody,
+        user_id: int = Depends(get_current_user)):
     user_dict = user.model_dump()
     hashed_password = hash_password(user_dict["password"])
         
     user_dict.update({"password": hashed_password})
+    user_dict.update({"user_id": user_id})
 
     stmt = insert(users_table).values(user_dict)
 
@@ -62,7 +65,7 @@ async def get_user_by_name(session: AsyncSession,username: str) -> dict:
     except SQLAlchemyError:
         await session.close()
         raise db_exception
- 
+    
 async def update_user(
     session:AsyncSession,
     user_id: int,
@@ -105,4 +108,3 @@ async def delete_user(
     if result.rowcount == 0:
         raise db_exception
     return True
-

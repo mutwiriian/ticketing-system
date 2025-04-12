@@ -13,7 +13,7 @@ from operations.sponsor_operations import (
     create_sponsor, get_sponsor, update_sponsor, delete_sponsor
 )
 
-from auth.auth import get_current_user
+from auth.security import get_current_user
 
 sponsor_router = APIRouter(dependencies=[Depends(get_current_user)], tags=["sponsors"])
 
