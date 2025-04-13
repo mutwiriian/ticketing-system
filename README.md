@@ -1,6 +1,6 @@
 A task management API built with (https://fastapi.tiangolo.com/)[FastAPI] and (https://www.sqlalchemy.org/)[SQLALchemy] toolkit on Postgresql database
 
-Implements CRUD operation for User, Events, Tickets Sponsors and Sponsorships
+Implements async CRUD operations for User, Events, Tickets Sponsors and Sponsorships
 
 Features custom authentication and database migrations with (https://alembic.sqlalchemy.org/en/latest/tutorial.html)[Alembic]
 
