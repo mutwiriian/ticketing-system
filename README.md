@@ -9,7 +9,7 @@ To experiment with the code open a Linux terminal and follow the following steps
 
 ### Clone repo
 ```
-git clone 
+git clone https://github.com/mutwiriian/ticketing-system.git
 ```
 
 ### Create and activate a environment using [uv](https://github.com/astral-sh/uv)
