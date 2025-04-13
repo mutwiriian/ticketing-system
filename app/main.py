@@ -22,17 +22,19 @@ async def lifespan(app: FastAPI):
         isolation_level="AUTOCOMMIT"
         )
 
-    async with temp_engine.connect() as temp_conn:
-        await create_database(connection=temp_conn)
+    try:
+        async with temp_engine.connect() as temp_conn:
+            await create_database(connection=temp_conn)
+    finally:
+        await temp_engine.dispose()
 
     app.state.engine = async_engine
-
     async with app.state.engine.begin() as connection:
         await connection.run_sync(metadata.create_all)
         yield
 
     await app.state.engine.dispose()
-    await temp_engine.dispose()
+
 
 app = FastAPI(lifespan=lifespan)
 

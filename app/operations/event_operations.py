@@ -6,6 +6,7 @@ from models.event import (
     EventBody, EventUpdateBody
 )
 from database.tables import events_table,sponsors_table, sponsorships_table
+from operations.user_operations import db_exception
 
 async def create_event(session: AsyncSession,event: EventBody) -> bool:
     stmt = insert(events_table).values(**event.model_dump())
@@ -14,9 +15,7 @@ async def create_event(session: AsyncSession,event: EventBody) -> bool:
         await session.commit()
     except SQLAlchemyError as e:
         await session.rollback()
-        print(f"Database error occurred: {e}")
-
-        return False
+        raise db_exception
 
     if result.rowcount == 0:
         return False
@@ -29,8 +28,7 @@ async def get_event(session: AsyncSession, event_id: int) -> dict | bool:
         result = await session.execute(stmt)
     except SQLAlchemyError as e:
         await session.close()
-        print(f"Database error occurred: {e}")
-        return False
+        raise db_exception
 
     result = result.mappings().first()
     if result is None:
@@ -62,8 +60,7 @@ async def get_events_with_sponsors(session: AsyncSession):
         result = await session.execute(stmt)
     except SQLAlchemyError as e:
         await session.close()
-        print(f"Database error occurred: {e}")
-        return False
+        raise db_exception
     
     events = result.mappings().all()
     return events
@@ -84,9 +81,7 @@ async def update_event(
         await session.commit()
     except SQLAlchemyError as e:
         await session.rollback()
-        print(f"Database error occurred: {e}")
-
-        return False
+        raise db_exception
     
     if result.rowcount == 0:
         return False
@@ -100,9 +95,7 @@ async def delete_event(session: AsyncSession,event_id: int) -> bool:
         await session.commit()
     except SQLAlchemyError as e:
         await session.rollback()
-        print(f"Database error occurred: {e}")
-
-        return False
+        raise db_exception
 
     if result.rowcount == 0:
         return False

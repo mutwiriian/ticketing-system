@@ -91,8 +91,7 @@ async def get_ticket(session: AsyncSession,ticket_id: int) -> dict | bool:
         result = await session.execute(stmt)
     except SQLAlchemyError as e:
         await session.close()
-        print(f"Database error occurred: {e}")
-        return False
+        raise db_exception
         
     ticket = result.mappings().first()
     if ticket is None:
@@ -113,9 +112,7 @@ async def update_ticket(session: AsyncSession,
         await session.commit()
     except SQLAlchemyError as e:
             await session.rollback()
-            print(f"Database error occurred: {e}")
-
-            return False
+            raise db_exception
 
     if result.rowcount == 0:
         return False
@@ -137,9 +134,7 @@ async def update_ticket_details(
         await session.commit()
     except SQLAlchemyError as e:
         await session.rollback()
-        print(f"Database error occurred: {e}")
-
-        return False
+        raise db_exception
 
     if result.rowcount == 0:
         return False
@@ -153,9 +148,7 @@ async def delete_ticket(session: AsyncSession, ticket_id: int) -> bool:
         await session.commit()
     except SQLAlchemyError as e:
         await session.rollback()
-        print(f"Database error occurred: {e}")
-
-        return False
+        raise db_exception
 
     if result.rowcount == 0:
         return False

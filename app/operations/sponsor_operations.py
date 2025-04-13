@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.sponsor import SponsorBody, SponsorUpdateBody
 from database.tables import sponsors_table
+from operations.user_operations import db_exception
 
 async def create_sponsor(session: AsyncSession,
                          sponsor: SponsorBody):
@@ -14,9 +15,7 @@ async def create_sponsor(session: AsyncSession,
         await session.commit()
     except SQLAlchemyError as e:
         await session.rollback()
-        print(f"Database error occured: {e}")
-
-        return False
+        raise db_exception
     
     if result.rowcount == 0:
         return False
@@ -29,9 +28,8 @@ async def get_sponsor(session: AsyncSession, sponsor_id: int) -> dict | bool:
         result = await session.execute(stmt)
     except SQLAlchemyError as e:
         await session.close()
-        print(f"Databse error occurred: {e}")
-
-        return False
+        raise db_exception
+    
     result = result.mappings().first()
     if result is None:
         return False
@@ -51,9 +49,7 @@ async def update_sponsor(
         await session.commit()
     except SQLAlchemyError as e:
         await session.rollback()
-        print(f"Database error occurred: {e}")
-
-        return False
+        raise db_exception
     
     if result.rowcount == 0:
         return False
@@ -68,8 +64,7 @@ async def delete_sponsor(session: AsyncSession, sponsor_id: int) -> bool:
         await session.commit()
     except SQLAlchemyError as e:
         await session.rollback()
-        print(f"Database error occurred {e}")
-        return False
+        raise db_exception
     
     if result.rowcount == 0:
         return False

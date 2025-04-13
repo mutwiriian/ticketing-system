@@ -37,5 +37,5 @@ async def create_database(connection: AsyncConnection):
         if not exists:
             await connection.execute(text("create database tickets"))
 
-    except Exception as e:
+    except Exception:
         raise 
