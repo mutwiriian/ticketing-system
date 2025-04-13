@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 import jwt
 
@@ -9,7 +9,10 @@ from datetime import datetime, timedelta, timezone
 
 from models.auth import Token
 from operations.user_operations import get_user_by_name
-from auth.security import ALGORITHM, SECRET, verify_password
+from auth.security import verify_password
+from auth.config import get_settings
+
+settings = get_settings()
 
 async def authenticate_user(session:AsyncSession,user_name: str, password: str):
     user: dict = await get_user_by_name(session=session,username=user_name)
@@ -36,7 +39,7 @@ def create_token(data: dict, expiry_delta: timedelta | None = None):
         expiry = datetime.now(timezone.utc) + timedelta(minutes=10)
 
     data_copy.update({"expires": expiry.isoformat()})
-    token = jwt.encode(data_copy,key=SECRET,algorithm=ALGORITHM)
+    token = jwt.encode(data_copy,key=settings.SECRET,algorithm=settings.ALGORITHM)
 
     return Token(access_token=token,token_type="bearer")
 
@@ -52,7 +55,7 @@ async def generate_token(
         detail="Incorrect username or password"
     )
 
-    expiry_delta = timedelta(minutes=5)
+    expiry_delta = timedelta(minutes=settings.TOKEN_EXPIRY)
     data = {"sub": user.get("id")}
 
     return create_token(data=data,expiry_delta=expiry_delta)

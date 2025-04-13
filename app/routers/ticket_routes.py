@@ -16,19 +16,21 @@ from operations.ticket_operations import (
     sell_ticket_to_user
 )
 
-from auth.security import get_current_user
+from operations.user_operations import get_current_user
 
 ticket_router = APIRouter(dependencies=[Depends(get_current_user)], tags=["tickets"])
 
 @ticket_router.post("/ticket")
 async def create_ticket_route(
     ticket: TicketBody, ticket_details: TicketDetailsBody,
-    session: Annotated[AsyncSession,Depends(get_session)]
+    session: Annotated[AsyncSession,Depends(get_session)],
+    user_id: int = Depends(get_current_user)
 ):
     return await create_ticket(
         session=session,
         ticket=ticket,
-        ticket_details=ticket_details
+        ticket_details=ticket_details,
+        user_id = user_id
     )
 
 @ticket_router.get("/ticket")

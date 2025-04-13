@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.connection import get_session
+
 from models.event import (
     EventBody, EventUpdateBody
 )
@@ -14,7 +15,7 @@ from operations.event_operations import (
     update_event, delete_event
 )
 
-from auth.security import get_current_user
+from operations.user_operations import get_current_user
 
 event_router = APIRouter(dependencies=[Depends(get_current_user)], tags=["events"])
 
@@ -58,5 +59,3 @@ async def delete_event_route(
         session: Annotated[AsyncSession,Depends(get_session)],
         event_id: int):
     return await delete_event(session=session,event_id=event_id)
-
-

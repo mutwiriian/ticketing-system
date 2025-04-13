@@ -3,22 +3,19 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from database.tables import metadata
-from database.connection import async_engine
-
-from routers.event_routes import event_router
-from routers.sponsor_routes import sponsor_router
-from routers.sponsorship_routes import sponsorship_router
-from routers.ticket_routes import ticket_router
-from routers.user_routes import user_router
 
 from database.connection import create_database
 
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
+from auth.config import get_settings
+
+settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     temp_engine = create_async_engine(
-        url="postgresql+asyncpg://postgres:postgres@172.22.0.1:5432/postgres",
+        url=settings.TEMP_DB_URL,
         isolation_level="AUTOCOMMIT"
         )
 
@@ -28,15 +25,24 @@ async def lifespan(app: FastAPI):
     finally:
         await temp_engine.dispose()
 
-    app.state.engine = async_engine
+    app.state.engine = create_async_engine(url=settings.DB_URL,echo=True,pool_size=10,max_overflow=20)
+    app.state.async_session = async_sessionmaker(app.state.engine)
+
     async with app.state.engine.begin() as connection:
         await connection.run_sync(metadata.create_all)
-        yield
+    
+    yield
 
     await app.state.engine.dispose()
 
 
 app = FastAPI(lifespan=lifespan)
+
+from routers.event_routes import event_router
+from routers.sponsor_routes import sponsor_router
+from routers.sponsorship_routes import sponsorship_router
+from routers.ticket_routes import ticket_router
+from routers.user_routes import user_router
 
 app.include_router(event_router)
 app.include_router(sponsor_router)

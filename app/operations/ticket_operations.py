@@ -13,15 +13,16 @@ from models.ticket_details import(
 from database.tables import tickets_table, ticket_details_table
 from operations.user_operations import db_exception
 
-from auth.security import get_current_user
+from operations.user_operations import get_current_user
 
 async def create_ticket(
     session: AsyncSession,
     ticket: TicketBody,
-    ticket_details: TicketDetailsBody | None,
-    user_id: int =  Depends(get_current_user)
+    user_id: int,
+    ticket_details: TicketDetailsBody | None = None
+     
 ) -> bool:
-    tickets_stmt = (
+    stmt = (
         insert(tickets_table)
         .values(
             **ticket.model_dump(),
@@ -30,55 +31,44 @@ async def create_ticket(
     )
     
     try:
-        ticket_id = await session.execute(tickets_stmt)
+        ticket_id = await session.execute(stmt)
         await session.commit()
+
+        ticket_id = ticket_id.scalar()
+        if not ticket_id:
+            return False
+        
     except SQLAlchemyError:
         await session.rollback()
         raise db_exception
-
-    if ticket_id is None:
-        return False
 
     if ticket_details is not None:
         stmt = (
             insert(ticket_details_table)
             .values(
-                 **ticket_details.model_dump(),
+                **ticket_details.model_dump(),
                 ticket_id=ticket_id
             )
         )
-        
-        try:
-            result = await session.execute(stmt)
-            await session.commit()
-
-            if result.rowcount == 0:
-                    return False
-        except SQLAlchemyError:
-            await session.rollback()
-            raise db_exception
-
-    
     else:
         stmt = (
             insert(ticket_details_table)
             .values(
                 seat=None,
-                ticket_type=None
+                ticket_type=None,
+                ticket_id=None
             )
         )
         
-        try:
-            result = await session.execute(stmt)
-            await session.commit()
+    try:
+        result = await session.execute(stmt)
+        await session.commit()
 
-            if result.rowcount == 0:
+        if result.rowcount == 0:
                 return False
-        except SQLAlchemyError:
-                await session.rollback()
-
-                return False
-   
+    except SQLAlchemyError:
+        await session.rollback()
+        raise db_exception
     return True
 
 async def get_ticket(session: AsyncSession,ticket_id: int) -> dict | bool:

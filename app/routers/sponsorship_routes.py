@@ -14,7 +14,7 @@ from operations.sponsorship_operations import (
     update_sponsorship, delete_sponsorship
 )
 
-from auth.security import get_current_user
+from operations.user_operations import get_current_user
 
 sponsorship_router = APIRouter(dependencies=[Depends(get_current_user)], tags=["sponsorships"])
 
@@ -52,4 +52,3 @@ async def delete_sponsorship_route(
     sponsorship_id: int
 ):
     return await delete_sponsorship(session=session, sponsorship_id=sponsorship_id)
-
