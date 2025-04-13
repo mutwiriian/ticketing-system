@@ -26,8 +26,8 @@ source .venv/bin/activate
 uv pip install -r requirements.txt
 ```
 
-### Initialize a Postgresql database
-Start a postgres and adjust the connections strings in _.env_ file accordingly
+### Initialize a [PostgreSQL](https://www.postgresql.org/) database
+Set up and start a PostgreSQL database server and adjust the connections strings in _.env_ file accordingly
 
 ### Start app
 ```
