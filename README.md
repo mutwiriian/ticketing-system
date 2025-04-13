@@ -1,8 +1,8 @@
-A task management API built with (https://fastapi.tiangolo.com/)[FastAPI] and (https://www.sqlalchemy.org/)[SQLALchemy] toolkit on Postgresql database
+A task management API built with [FastAPI](https://fastapi.tiangolo.com/) and [SQLALchemy](https://www.sqlalchemy.org/) toolkit on Postgresql database
 
 Implements async CRUD operations for User, Events, Tickets Sponsors and Sponsorships
 
-Features custom authentication and database migrations with (https://alembic.sqlalchemy.org/en/latest/tutorial.html)[Alembic]
+Features custom authentication and database migrations with [Alembic](https://alembic.sqlalchemy.org/en/latest/tutorial.html)
 
 ## Getting started
 To experiment with the code open a Linux terminal and follow the following steps.
@@ -12,7 +12,7 @@ To experiment with the code open a Linux terminal and follow the following steps
 git clone 
 ```
 
-### Create and activate a environment using (https://github.com/astral-sh/uv)[uv]
+### Create and activate a environment using [uv](https://github.com/astral-sh/uv)
 ```
 uv init
 ```
