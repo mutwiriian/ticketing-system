@@ -39,5 +39,5 @@ cd app
 uvicorn main:app --reload
 ```
 
-Visit *https://localhost:8000/docs* to integrate with the API using (https://swagger.io/tools/swagger-ui/)[Swagger]
+Visit *https://localhost:8000/docs* to interact with the API using (https://swagger.io/tools/swagger-ui/)[Swagger]
 
